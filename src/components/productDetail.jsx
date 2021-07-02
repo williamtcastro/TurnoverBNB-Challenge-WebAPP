@@ -79,22 +79,37 @@ function ProductDetail({
   };
 
   const deleteProduct = () => {
-    if (productsList.length === 1) {
-      Swal.fire({
-        title: 'Request Sent',
-        text: 'Please wait',
-        icon: 'info',
-      });
-      api.delete(`/product/${productsList[0].id}`, productsList[0]).then(() => {
-        window.location.reload();
-      });
-    } else {
-      Swal.fire({
-        title: 'Request not sent',
-        text: 'Please select only one product',
-        icon: 'warning',
-      });
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'All selected items will be deleted',
+      icon: 'warning',
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed)
+        if (productsList.length === 1) {
+          Swal.fire({
+            title: 'Request Sent',
+            text: 'Please wait',
+            icon: 'info',
+          });
+          api
+            .delete(`/product/${productsList[0].id}`, productsList[0])
+            .then(() => {
+              window.location.reload();
+            });
+        } else {
+          const idsList = [];
+
+          productsList.map((prod) => idsList.push(prod.id));
+
+          api.delete('/product/bulk', idsList).then(() => {
+            window.location.reload();
+          });
+        }
+    });
   };
 
   const createProducts = () => {
@@ -111,14 +126,27 @@ function ProductDetail({
       else {
         Swal.fire({
           title: 'Request Failed',
-          text: 'Field Required',
+          text: 'One or more fields required',
           icon: 'warning',
         });
       }
     } else {
-      api.post(`/product/bulk`, productsList).then(() => {
-        window.location.reload();
+      let flag;
+      productsList.forEach((prod) => {
+        if (prod.name !== '') flag = true;
+        else flag = false;
       });
+
+      if (flag)
+        api.post(`/product/bulk`, productsList).then(() => {
+          window.location.reload();
+        });
+      else
+        Swal.fire({
+          title: 'Request Failed',
+          text: 'One or more fields required',
+          icon: 'warning',
+        });
     }
   };
 
@@ -211,7 +239,7 @@ function ProductDetail({
         />
       ))}
 
-      {productAction <= 1 ? (
+      {productAction === 0 ? (
         <div className={styles.actions}>
           <CustomButtomGroup buttons={ButtonAdd} variant="contained" />
         </div>

@@ -45,7 +45,7 @@ function customProductForm({
 
   return (
     <div className={styles.root}>
-      <form className={styles.form} noValidate autoComplete="off">
+      <form className={styles.form} autoComplete="off">
         {action !== 0 ? (
           <TextField
             id="id"
@@ -63,6 +63,7 @@ function customProductForm({
           label="Name"
           variant="outlined"
           disabled={isEditable}
+          required
           value={selectedProduct.name}
           onChange={(e) => {
             selectedProduct.name = e.target.value;
@@ -74,6 +75,7 @@ function customProductForm({
           label="Price"
           variant="outlined"
           type="number"
+          required
           disabled={isEditable}
           value={selectedProduct.price}
           onChange={(e) => {
@@ -86,6 +88,7 @@ function customProductForm({
           label="Quantity"
           variant="outlined"
           type="number"
+          required
           disabled={isEditable}
           value={selectedProduct.quantity}
           onChange={(e) => {
