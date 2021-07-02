@@ -101,13 +101,22 @@ function ProductDetail({
               window.location.reload();
             });
         } else {
+          Swal.fire({
+            title: 'Request Sent',
+            text: 'Please wait',
+            icon: 'info',
+          });
           const idsList = [];
 
           productsList.map((prod) => idsList.push(prod.id));
 
-          api.delete('/product/bulk', idsList).then(() => {
-            window.location.reload();
-          });
+          api
+            .delete('/product/bulk', {
+              data: idsList,
+            })
+            .then(() => {
+              window.location.reload();
+            });
         }
     });
   };
