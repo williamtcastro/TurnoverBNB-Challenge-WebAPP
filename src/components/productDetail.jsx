@@ -122,12 +122,12 @@ function ProductDetail({
   };
 
   const createProducts = () => {
+    Swal.fire({
+      title: 'Request Sent',
+      text: 'Please wait',
+      icon: 'info',
+    });
     if (productsList.length === 1) {
-      Swal.fire({
-        title: 'Request Sent',
-        text: 'Please wait',
-        icon: 'info',
-      });
       if (productsList[0].name !== '')
         api.post(`/product/`, productsList[0]).then(() => {
           window.location.reload();
